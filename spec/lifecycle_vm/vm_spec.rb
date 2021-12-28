@@ -379,15 +379,16 @@ RSpec.describe LifecycleVM::VM do
 
     it 'logs on state entry' do
       BasicVM.new(memory).call
-      expect(logger.messages).to include([:enter, state: :start, ctx: anything])
+      expect(logger.messages).to include([:enter, a_hash_including(state: :start, ctx: anything)])
     end
 
     it 'logs on error' do
       ErrorVm.new(memory).call
 
       expect(logger.messages).to include([
-        :op_errors, state_name: :start, op_name: 'AlwaysErrorOp',
-        errors: { base: ['I always fail'] }, ctx: anything
+        :op_errors,
+        a_hash_including(state_name: :start, op_name: 'AlwaysErrorOp',
+        errors: { base: ['I always fail'] }, ctx: anything)
       ])
     end
   end

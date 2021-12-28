@@ -37,11 +37,7 @@ module LifecycleVM
       end
 
       def call(vm)
-        vm.do_anonymous_state(self)
-      end
-
-      def name
-        'anonymous'
+        vm.do_anonymous_op(@op, @then)
       end
     end
 

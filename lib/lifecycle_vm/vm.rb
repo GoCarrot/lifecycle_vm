@@ -173,10 +173,10 @@ module LifecycleVM
     end
 
     # @private
-    def do_anonymous_state(state)
-      raise InvalidState.new(state, self) if state.op && current_op.executed?
+    def do_anonymous_op(op, following)
+      raise InvalidState.new(current_state.name, self) if op && current_op.executed?
 
-      do_op(state)
+      do_op(op, following)
     end
 
   private
@@ -192,7 +192,7 @@ module LifecycleVM
 
       return nil if config.terminal_states.include?(current_state.name)
 
-      do_op(state)
+      do_op(state.op, state.then)
     end
 
     OpEntry = Struct.new(:state_name, :op, :errors) do
@@ -205,15 +205,14 @@ module LifecycleVM
       end
     end
 
-    def do_op(state)
+    def do_op(op, following)
       # If we're running under systemd, as determined by the presence of the SdNotify gem,
       # notify the watchdog each time we run an op. This gets us more or less free
       # watchdog monitoring for long running services.
       SdNotify.watchdog if defined?(SdNotify)
-      op = state.op
 
       op_result = op&.call(memory)
-      self.current_op = OpEntry.new(state.name, op, op_result&.errors)
+      self.current_op = OpEntry.new(current_state.name, op, op_result&.errors)
 
       if current_op.errors?
         logger&.error(:op_errors, state_name: current_op.state_name, op_name: current_op.op.name,
@@ -238,7 +237,7 @@ module LifecycleVM
         self.error_op = nil
       end
 
-      state.then.call(self)
+      following.call(self)
     end
   end
 end

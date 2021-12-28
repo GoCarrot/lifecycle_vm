@@ -391,5 +391,18 @@ RSpec.describe LifecycleVM::VM do
         errors: { base: ['I always fail'] }, ctx: anything)
       ])
     end
+
+    it 'logs conditionals' do
+      CondVM.new(memory).call
+      expect(logger.messages).to include([
+        :conditional_check, a_hash_including(
+          state: :start, conditional: 'CondCGreater42'
+        )
+      ]).and include([
+        :conditional_result, a_hash_including(
+          state: :start, conditional: 'CondCGreater42', result: false
+        )
+      ])
+    end
   end
 end

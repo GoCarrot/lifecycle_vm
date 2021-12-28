@@ -108,7 +108,14 @@ module LifecycleVM
     end
 
     def call(vm)
+      state_name = vm.current_state.name
+      conditional_name = @cond.name
+      logger = vm.logger
+
+      logger&.debug(:conditional_check, state: state_name, ctx: vm, conditional: conditional_name)
       value = @cond.call(vm.memory)
+      logger&.debug(:conditional_result, state: state_name, ctx: vm, conditional: conditional_name, result: value)
+
       branch = @branches[value]
       raise InvalidCond.new(value, @cond, @branches, vm) unless branch.respond_to?(:call)
 

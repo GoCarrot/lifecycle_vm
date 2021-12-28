@@ -63,29 +63,29 @@ module LifecycleVM
       @writes
     end
 
-    def self.call(state)
+    def self.call(memory)
       obj = allocate
 
       @reads ||= {}
       @writes ||= {}
 
       @reads.each do |(attribute, ivar)|
-        raise InvalidAttr.new(self, attribute) unless state.respond_to?(attribute)
+        raise InvalidAttr.new(self, attribute) unless memory.respond_to?(attribute)
 
-        obj.instance_variable_set(ivar, state.send(attribute).clone)
+        obj.instance_variable_set(ivar, memory.send(attribute).clone)
       end
 
       @writes.each do |(attribute, setter)|
-        raise InvalidAttr.new(self, attribute) unless state.respond_to?(setter)
+        raise InvalidAttr.new(self, attribute) unless memory.respond_to?(setter)
       end
 
-      obj.send(:initialize, state.logger)
+      obj.send(:initialize, memory.logger)
       obj.send(:call)
       obj.send(:validate)
 
       unless obj.errors?
         @writes.each do |(attribute, setter)|
-          state.send(setter, obj.send(attribute))
+          memory.send(setter, obj.send(attribute))
         end
       end
 

@@ -15,7 +15,15 @@
 # limitations under the License.
 
 module LifecycleVM
+  # Base class for all conditionals in a vm.
+  # A conditional may read from vm emory by declare reads using the DSL. The
+  # lifecycle of a conditional is initialize -> call, and both methods will
+  # always be called. All reads and logger will be provided before initialize
+  # is called.
+  #
+  # A conditional may not write to vm memory, and must not error.
   class CondBase
+    # Raised if a conditional attempts to read from a memory slot that does not exist.
     class InvalidAttr < ::LifecycleVM::Error
       attr_reader :cond_class, :attribute
 
@@ -26,12 +34,15 @@ module LifecycleVM
       end
     end
 
+    # Read one or more values out of vm memory and provide them as readable attributes
     def self.reads(*attrs)
       @reads ||= {}
       @reads.merge!(Hash[attrs.map { |attribute| [attribute, :"@#{attribute}"] }])
       attr_reader(*attrs)
     end
 
+    # Execute the current op with the gien vm memory.
+    # This will read out all declared reads from memory and return the result of #call.
     def self.call(memory)
       obj = allocate
 

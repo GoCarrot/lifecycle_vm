@@ -15,6 +15,9 @@
 # limitations under the License.
 
 module LifecycleVM
+  # Base class for VM memory.
+  # Any slots that you want to make readable must have a getter method defined.
+  # Any slots that you want to make writeable must have a setter method defined.
   class Memory
     PROTECTED = %i[current_state last_state current_op error_op].freeze
     BUILTINS = (PROTECTED + %i[logger]).freeze

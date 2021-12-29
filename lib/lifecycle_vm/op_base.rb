@@ -79,7 +79,10 @@ module LifecycleVM
         raise InvalidAttr.new(self, attribute) unless memory.respond_to?(setter)
       end
 
-      obj.send(:initialize, memory.logger)
+      obj.instance_variable_set(:"@logger", memory.logger)
+      obj.instance_variable_set(:"@errors", nil)
+
+      obj.send(:initialize)
       obj.send(:call)
       obj.send(:validate)
 
@@ -90,11 +93,6 @@ module LifecycleVM
       end
 
       obj
-    end
-
-    def initialize(logger)
-      @errors = nil
-      @logger = logger
     end
 
     def call; end

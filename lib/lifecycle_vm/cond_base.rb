@@ -32,26 +32,24 @@ module LifecycleVM
       attr_reader(*attrs)
     end
 
-    def self.call(state)
+    def self.call(memory)
       obj = allocate
 
       @reads ||= {}
 
       @reads.each do |(attribute, ivar)|
-        raise InvalidAttr.new(self, attribute) unless state.respond_to?(attribute)
+        raise InvalidAttr.new(self, attribute) unless memory.respond_to?(attribute)
 
-        obj.instance_variable_set(ivar, state.send(attribute).clone)
+        obj.instance_variable_set(ivar, memory.send(attribute).clone)
       end
 
-      obj.send(:initialize, state.logger)
+      obj.instance_variable_set(:"@logger", memory.logger)
+
+      obj.send(:initialize)
       obj.send(:call)
     end
 
     attr_reader :logger
-
-    def initialize(logger)
-      @logger = logger
-    end
 
     def call; end
   end

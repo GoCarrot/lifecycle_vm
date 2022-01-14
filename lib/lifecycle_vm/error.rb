@@ -14,8 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'lifecycle_vm/error'
-require 'lifecycle_vm/version'
-require 'lifecycle_vm/cond_base'
-require 'lifecycle_vm/op_base'
-require 'lifecycle_vm/vm'
+module LifecycleVM
+  class Error < RuntimeError; end
+end

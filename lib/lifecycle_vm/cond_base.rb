@@ -14,6 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+require 'lifecycle_vm/error'
+
 module LifecycleVM
   # Base class for all conditionals in a vm.
   # A conditional may read from vm emory by declare reads using the DSL. The

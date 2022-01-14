@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+require 'lifecycle_vm/error'
 require 'lifecycle_vm/memory'
 
 module LifecycleVM

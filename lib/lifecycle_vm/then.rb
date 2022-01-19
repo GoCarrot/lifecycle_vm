@@ -15,7 +15,6 @@
 # limitations under the License.
 
 require 'lifecycle_vm/error'
-require 'lifecycle_vm/vm'
 
 module LifecycleVM
   class Then

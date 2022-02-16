@@ -142,6 +142,8 @@ module LifecycleVM
     # Executes the VM until a terminal state is reached.
     # @note May never terminate!
     def call
+      self.error_op = nil
+      self.current_op = nil
       next_state = config.initial_state
       loop do
         next_state = do_state(next_state)
